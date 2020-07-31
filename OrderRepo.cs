@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
-
-
+using System.Text.Json;
 
 namespace Trasnport.ly
 {
@@ -13,13 +11,10 @@ namespace Trasnport.ly
         {
             public IEnumerable<Order> GetOrders()
             {
-                IEnumerable<Order> orders = null;
-                using (var r = new StreamReader(Path.GetFullPath("coding-assigment-orders.json"))) {
-                    orders = JsonConvert.DeserializeObject<Dictionary<string, Order>>(r.ReadToEnd()).
-                        Select(o => new Order { Id = o.Key, Destination = o.Value.Destination })
-                        .ToArray();
-                }
-                return orders;
+                var jsonFile = File.ReadAllText("coding-assigment-orders.json");
+                return JsonSerializer.Deserialize<Dictionary<string, Order>>(jsonFile)
+                    .Select(o => new Order { Id = o.Key, Destination = o.Value.Destination })
+                    .ToArray();
             }
 
         }
